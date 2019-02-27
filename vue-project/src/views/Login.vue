@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import { authentication } from 'C:/Users/Stefanos Aristeidou/Desktop/vue-project/src/firebase.js';
+  import { authentication } from '@/src/firebase.js';
 
   export default {
     name: 'login',
