@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import { authentication } from '@/src/firebase.js';
+  import { authentication } from '@/firebase.js';
 
   export default {
     name: 'login',
