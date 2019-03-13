@@ -4,8 +4,7 @@
 
     <tr>
       <td><input type="text" placeholder="ProductId" v-model="ProductId"></td>
-      <td><input type="text" placeholder="Brand" v-model="Brand"></td>
-      <td><input type="text" placeholder="Name" v-model="Name"></td>
+      <td><input type="text" placeholder="Gender" v-model="Gender"></td>
       <td><input type="text" placeholder="Price" v-model="Price"></td>
       <td><input type="text" placeholder="Type" v-model="Type"></td>
       <td><button @click="CreateProduct">Add</button></td>
@@ -15,8 +14,7 @@
         <thead>
          <tr>
             <th>Product Id</th>
-             <th>Brand</th>
-            <th>Name</th>
+            <th>Gender</th>
             <th>Price</th>
             <th>Type</th>
             <th>Edit</th>
@@ -25,8 +23,7 @@
         <tbody>
      <tr v-for="i in product" v-bind:key="i['.key']" v-bind:class="{active: isActive}">
     <td>{{i.ProductId}}</td>
-    <td>{{i.Brand}}</td>
-    <td>{{i.Name}}</td>
+    <td>{{i.Gender}}</td>
     <td>{{i.Price}}</td>
     <td>{{i.Type}}</td>
     <td>
