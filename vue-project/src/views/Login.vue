@@ -1,16 +1,18 @@
 <template>
   <div class="login">
+    <LayoutLogin>
     <h3>Sign In</h3>
     <input type="text" v-model="email" placeholder="Email"><br>
     <input type="password" v-model="password" placeholder="Password"><br>
     <button @click="login">Connection</button>
     <p>You don't have an account ? You can <router-link to="/sign-up">create one</router-link></p>
+    </LayoutLogin> 
   </div>
 </template>
 
 <script>
   import { authentication } from '@/firebase.js';
-
+  import LayoutLogin from '@/components/layout/Login_layout.vue'
   export default {
     name: 'login',
     data() {
@@ -18,6 +20,9 @@
         email: '',
         password: ''
       }
+    },
+    components:{
+      LayoutLogin
     },
     methods: {
       login: function() {

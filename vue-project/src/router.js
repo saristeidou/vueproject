@@ -7,6 +7,8 @@ import Login from '@/views/Login';
 import SignUp from '@/views/SignUp';
 import Products from '@/views/Products';
 import Sales from '@/views/Sales';
+import Branch from '@/views/Branch';
+import Edit from '@/views/Edit';
 
 Vue.use(Router);
 
@@ -50,6 +52,16 @@ const router = new Router({
       path: '/sales',
       name: 'Sales',
       component: Sales
+    },
+    {
+      path: '/branch',
+      name: 'Branch',
+      component: Branch
+    },
+    {
+      path: '/edit',
+      name: 'Edit',
+      component: Edit
     }
   ]
 });

@@ -1,33 +1,37 @@
 <template>
-  <div id="app">
-    
-<router-view/>
-    
+
+  <div class= "side-bar">
+
+      <div class="topbar">
+    <div class="bar">
+        <h3>Sales Analysis </h3>
+      </div>
+
+    </div>
+
+    <ul class="sbul">
+      
+      <li class="sbli"><router-link to="/home"><i class="fa icons">&#xf3fd;</i>Dashboard</router-link></li>
+      
+      <li class="sbli"><router-link to="/branch"><i class="fa icons">&#xf1ad;</i>Branch</router-link></li>
+
+      <li class="sbli"><router-link to="/sales"><i class="fa icons">&#xf080;</i>Sales</router-link></li>
+      
+      <li class="sbli"><router-link to="/products"><i class="fa icons">&#xf49e;</i>Product</router-link></li>
+      
+      <li class="sbli"><router-link to="/Edit"><i class="fa icons">&#xf044;</i>Edit</router-link></li>
+      
+     
+    </ul>
+
+	<div class="content" id="dashboard_id">
+		<slot/>
+	</div>
   </div>
-  
+
 </template>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-
 html,body{
   margin: 0;
   font-family: 'lato',Arial;
@@ -169,5 +173,4 @@ h3{
   color:white;
   font-size:50px;
 }
-
 </style>
