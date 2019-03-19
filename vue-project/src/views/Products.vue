@@ -1,43 +1,29 @@
 <template>
   <div class="products">
-    <h2>HTML Table</h2>
+    <Sidebar> 
+      
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      aria-controls="myTable"
+      align="center"
+    />
+      
 
-    <tr>
-      <td><input type="text" placeholder="ProductId" v-model="ProductId"></td>
-      <td><input type="text" placeholder="Gender" v-model="Gender"></td>
-      <td><input type="text" placeholder="Price" v-model="Price"></td>
-      <td><input type="text" placeholder="Type" v-model="Type"></td>
-      <td><button @click="CreateProduct">Add</button></td>
-    </tr>
-
-    <table>
-        <thead>
-         <tr>
-            <th>Product Id</th>
-            <th>Gender</th>
-            <th>Price</th>
-            <th>Type</th>
-            <th>Edit</th>
-        </tr>
-        </thead>
-        <tbody>
-     <tr v-for="i in product" v-bind:key="i['.key']" v-bind:class="{active: isActive}">
-    <td>{{i.ProductId}}</td>
-    <td>{{i.Gender}}</td>
-    <td>{{i.Price}}</td>
-    <td>{{i.Type}}</td>
-    <td>
-      <button @click="EditProduct()">Edit</button>
-      <button @click="RemoveProduct(i['.key'])">Remove</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+    <b-table
+      id="myTable"
+      :items="product"
+      :per-page= 20
+      :current-page="currentPage"
+      small
+    />
+    </Sidebar> 
   </div>
 </template>
 
 <script>
 import { productref } from '@/firebase.js';
+import Sidebar from '@/components/layout/Sidebar.vue'
 
 export default {
     name: 'products',
@@ -48,7 +34,16 @@ export default {
      Name: '',
      Price: '',
      Type: '',
+     currentPage: 1,
      isActive: true
+      }
+    },
+    components: {
+    Sidebar
+    },
+    computed: {
+      rows() {
+        return this.product.length
       }
     },
   firebase: {
@@ -68,6 +63,7 @@ export default {
       }
    }
 }
+
 </script>
 <style scoped>
 table {
