@@ -15,6 +15,7 @@
     "bootstrap-vue": "^2.0.0-rc.13",
     "firebase": "^5.8.4",
     "font-awesome": "^4.7.0",
+    "jquery": "^3.3.1",
     "vue": "^2.6.6",
     "vue-google-charts": "^0.3.2",
     "vue-router": "^3.0.1",

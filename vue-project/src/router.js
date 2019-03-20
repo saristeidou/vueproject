@@ -61,7 +61,10 @@ const router = new Router({
     {
       path: '/edit',
       name: 'Edit',
-      component: Edit
+      component: Edit,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 });

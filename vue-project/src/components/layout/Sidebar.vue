@@ -19,7 +19,7 @@
       
       <li class="sbli"><router-link to="/products"><i class="fa icons">&#xf49e;</i>Product</router-link></li>
       
-      <li class="sbli"><router-link to="/Edit"><i class="fa icons">&#xf044;</i>Edit</router-link></li>
+      <li class="sbli"><router-link to="/edit"><i class="fa icons">&#xf044;</i>Edit</router-link></li>
       
      
     </ul>

@@ -2,6 +2,17 @@
   <div class="products">
     <Sidebar> 
       
+    <b-col md="6" class="my-1">
+        <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+          <b-input-group>
+            <b-form-input v-model="filter" placeholder="Type to Search" />
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+
     <b-pagination
       v-model="currentPage"
       :total-rows="rows"
@@ -12,11 +23,17 @@
 
     <b-table
       id="myTable"
+      stacked="md"
       :items="product"
+      :fields="table"
+      :filter="filter"
       :per-page= 20
       :current-page="currentPage"
       small
-    />
+    >
+    <template slot=".key" thClass = "d-none" tdClass = "d-none">
+      </template>
+      </b-table>
     </Sidebar> 
   </div>
 </template>
@@ -29,11 +46,8 @@ export default {
     name: 'products',
     data(){
       return{
-     ProductId: '',
-     Brand: '',
-     Name: '',
-     Price: '',
-     Type: '',
+     table: ['ProductId', 'OriginalPrice', 'Type'],
+     filter: null,
      currentPage: 1,
      isActive: true
       }
