@@ -1,59 +1,75 @@
 <template>
-  <div class="products">
-    <Sidebar> 
-      
-      <TableProduct msg="dgr" v-if="selected === 'a'"></TableProduct>
+  <div class="tablestock"> 
+      <h1>{{ msg }}</h1>
 
-      <b-form-group label="Per page">
-          <b-form-select :options="tableOption" v-model="selected" />
+        <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+          <b-input-group>
+            <b-form-input v-model="filter" placeholder="Type to Search" />
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
         </b-form-group>
+
+
+    <b-table
+      id="myTable"
+      stacked="md"
+      :items="stock"
+      :fields="fields"
+      :filter="filter"
+      :per-page= 20
+      :current-page="currentPage"
+      small
+    />
+
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      aria-controls="myTable"
+      align="center"
+    />
     
-        
-    </Sidebar> 
   </div>
 </template>
 
 <script>
-import { productref } from '@/firebase.js';
-import Sidebar from '@/components/layout/Sidebar.vue';
-import TableProduct from '@/components/TableProduct.vue';
+import { stockref } from '@/firebase.js';
 
 export default {
-    name: 'products',
+    name: 'tablestock',
     data(){
       return{
-     table: ['ProductId', 'OriginalPrice', 'Type'],
      fields: [
+          {
+            key: 'StockId',
+            sortable: true
+          },
           {
             key: 'ProductId',
             sortable: true
           },
           {
-            key: 'OriginalPrice',
+            key: 'BranchId',
             sortable: true
           },
           {
-            key: 'Type',
+            key: 'SellingPrice',
             sortable: true
           }
         ],
      filter: null,
      currentPage: 1,
-     
      isActive: true
       }
     },
-    components: {
-    Sidebar,
-    TableProduct
-    },
     computed: {
       rows() {
-        return this.product.length
+        return this.stock.length
       }
     },
   firebase: {
-     product: productref
+     stock: stockref
    },
    
    methods:{
@@ -67,7 +83,10 @@ export default {
       EditProduct(){
         this.isActive = !this.isActive;
       }
-   }
+   },
+  props: {
+    msg: String
+  }
 }
 
 </script>

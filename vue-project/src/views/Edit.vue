@@ -2,68 +2,43 @@
   <div class="edit">
     <Sidebar> 
       
-    <b-col md="6" class="my-1">
-        <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
-          <b-input-group>
-            <b-form-input v-model="filter" placeholder="Type to Search" />
-            <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
+    <b-form-group label="Stelect table">
+      <b-form-select :options="tableOption" v-model="selected" />
+    </b-form-group>
 
-    <b-pagination
-      v-model="currentPage"
-      :total-rows="rows"
-      aria-controls="myTable"
-      align="center"
-    />
-      
+    <TableProduct msg="Products" v-if="selected === 'Product'"></TableProduct>
+    <TableStock msg="Stock" v-if="selected === 'Stock'"></TableStock>
+    <TableType msg="Type" v-if="selected === 'Type'"></TableType>
 
-    <b-table
-      id="myTable"
-      stacked="md"
-      :items="stock"
-      :fields="table"
-      :filter="filter"
-      :per-page= 20
-      :current-page="currentPage"
-      small
-    >
-    <template slot=".key" thClass = "d-none" tdClass = "d-none">
-      </template>
-      </b-table>
     </Sidebar> 
   </div>
 </template>
 
 <script>
-import { stockref } from '@/firebase.js';
-import Sidebar from '@/components/layout/Sidebar.vue'
+import Sidebar from '@/components/layout/Sidebar.vue';
+import TableProduct from '@/components/TableProduct.vue';
+import TableStock from '@/components/TableStock.vue';
+import TableType from '@/components/TableType.vue';
 
 export default {
     name: 'edit',
     data(){
       return{
-     table: ['StockId', 'ProductId', 'BranchId','SellingPrice'],
-     filter: null,
-     currentPage: 1,
-     isActive: true
+      tableOption:['Product','Stock','Type'],
+     selected: 'Product'
       }
     },
     components: {
-    Sidebar
+    Sidebar,
+    TableProduct,
+    TableStock,
+    TableType
     },
     computed: {
       rows() {
         return this.stock.length
       }
-    },
-  firebase: {
-     stock: stockref
-   },
-   
+    },  
    methods:{
       CreateProduct(){
         productref.push({ProductId: this.ProductId, Brand: this.Brand, 

@@ -1,0 +1,100 @@
+<template>
+  <div class="tabletype"> 
+      <h1>{{ msg }}</h1>
+
+        <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+          <b-input-group>
+            <b-form-input v-model="filter" placeholder="Type to Search" />
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+
+
+    <b-table
+      id="myTable"
+      stacked="md"
+      :items="typetable"
+      :fields="fields"
+      :filter="filter"
+      :per-page= 20
+      :current-page="currentPage"
+      small
+    />
+
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      aria-controls="myTable"
+      align="center"
+    />
+    
+  </div>
+</template>
+
+<script>
+import { typeref } from '@/firebase.js';
+
+export default {
+    name: 'tabletype',
+    data(){
+      return{
+     fields: [
+          {
+            key: 'TypeId',
+            sortable: true
+          },
+          {
+            key: 'Type_Name',
+            sortable: true
+          }
+        ],
+     filter: null,
+     currentPage: 1
+      }
+    },
+    computed: {
+      rows() {
+        return this.typetable.length
+      }
+    },
+  firebase: {
+     typetable: typeref
+   },
+   
+   methods:{
+      CreateProduct(){
+        productref.push({ProductId: this.ProductId, Brand: this.Brand, 
+        Name: this.Name, Price: this.Price, Type: this.Type});
+      },
+      RemoveProduct(key){
+        productref.child(key).remove();
+      },
+      EditProduct(){
+        this.isActive = !this.isActive;
+      }
+   },
+  props: {
+    msg: String
+  }
+}
+
+</script>
+<style scoped>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>

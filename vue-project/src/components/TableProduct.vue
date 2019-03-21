@@ -1,28 +1,44 @@
 <template>
-  <div class="products">
-    <Sidebar> 
-      
-      <TableProduct msg="dgr" v-if="selected === 'a'"></TableProduct>
-
-      <b-form-group label="Per page">
-          <b-form-select :options="tableOption" v-model="selected" />
-        </b-form-group>
+  <div class="tableproducts">
+        <h1>{{ msg }}</h1>
     
-        
-    </Sidebar> 
+        <b-form-group label-cols-sm="3" label="Filter" class="mb-0" align="center">
+          <b-input-group>
+            <b-form-input v-model="filter" placeholder="Type to Search" />
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      
+
+    <b-table
+      id="myTable"
+      stacked="md"
+      :items="product"
+      :fields="fields"
+      :filter="filter"
+      :per-page= 20
+      :current-page="currentPage"
+      small
+    />
+
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      aria-controls="myTable"
+      align="center"
+    />
   </div>
 </template>
 
 <script>
 import { productref } from '@/firebase.js';
-import Sidebar from '@/components/layout/Sidebar.vue';
-import TableProduct from '@/components/TableProduct.vue';
 
 export default {
-    name: 'products',
+    name: 'tableproducts',
     data(){
       return{
-     table: ['ProductId', 'OriginalPrice', 'Type'],
      fields: [
           {
             key: 'ProductId',
@@ -38,14 +54,8 @@ export default {
           }
         ],
      filter: null,
-     currentPage: 1,
-     
-     isActive: true
+     currentPage: 1
       }
-    },
-    components: {
-    Sidebar,
-    TableProduct
     },
     computed: {
       rows() {
@@ -67,7 +77,10 @@ export default {
       EditProduct(){
         this.isActive = !this.isActive;
       }
-   }
+   },
+  props: {
+    msg: String
+  }
 }
 
 </script>
