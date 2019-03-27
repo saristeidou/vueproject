@@ -38,19 +38,7 @@ export default {
       rows() {
         return this.stock.length
       }
-    },  
-   methods:{
-      CreateProduct(){
-        productref.push({ProductId: this.ProductId, Brand: this.Brand, 
-        Name: this.Name, Price: this.Price, Type: this.Type});
-      },
-      RemoveProduct(key){
-        productref.child(key).remove();
-      },
-      EditProduct(){
-        this.isActive = !this.isActive;
-      }
-   }
+    }
 }
 
 </script>

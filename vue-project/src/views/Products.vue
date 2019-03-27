@@ -1,13 +1,15 @@
 <template>
   <div class="products">
     <Sidebar> 
-      
-      <TableProduct msg="dgr" v-if="selected === 'a'"></TableProduct>
-
-      <b-form-group label="Per page">
+      <b-form-group label="Select Table">
           <b-form-select :options="tableOption" v-model="selected" />
         </b-form-group>
-    
+       
+      <TableProduct msg="Products" v-if="selected === 'Products'"></TableProduct>
+      
+      <TableType msg="Type" v-if="selected === 'Type'"></TableType>
+            
+      <TableStock msg="Stock" v-if="selected === 'Stock'"></TableStock>         
         
     </Sidebar> 
   </div>
@@ -17,11 +19,14 @@
 import { productref } from '@/firebase.js';
 import Sidebar from '@/components/layout/Sidebar.vue';
 import TableProduct from '@/components/TableProduct.vue';
+import TableType from '@/components/TableType.vue';
+import TableStock from '@/components/TableStock.vue';
 
 export default {
     name: 'products',
     data(){
       return{
+      tableOption: ['Products', 'Type', 'Stock'],
      table: ['ProductId', 'OriginalPrice', 'Type'],
      fields: [
           {
@@ -39,13 +44,15 @@ export default {
         ],
      filter: null,
      currentPage: 1,
-     
+     selected: 'Products',
      isActive: true
       }
     },
     components: {
     Sidebar,
-    TableProduct
+    TableProduct,
+    TableType,
+    TableStock
     },
     computed: {
       rows() {

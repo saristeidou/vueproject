@@ -56,7 +56,10 @@ const router = new Router({
     {
       path: '/branch',
       name: 'Branch',
-      component: Branch
+      component: Branch,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/edit',
