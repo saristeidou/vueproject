@@ -11,6 +11,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCoffee,faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueGoogleCharts from 'vue-google-charts'
+//import jsPDF from 'jsPDF';
 
 library.add(faCoffee,faBars)
 
