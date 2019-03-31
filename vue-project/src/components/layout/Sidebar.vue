@@ -5,7 +5,7 @@
   <b-navbar toggleable type="dark" variant="dark">
     <b-navbar-toggle target="nav_text_collapse" />
 
-    <b-navbar-brand>Vue-project</b-navbar-brand>
+    <b-navbar-brand>{{companyname}}</b-navbar-brand>
 
     <b-collapse is-nav id="nav_text_collapse">
       <b-navbar-nav>
@@ -25,10 +25,35 @@
 </template>
 
 <script>
-import { authentication } from '@/firebase.js';
+import { authentication, usersref } from '@/firebase.js'
+import firebase from 'firebase'
+import debounce from 'lodash/debounce'
 
 export default {
+  data() {
+      return {
+        companyname: '',
+        key: ''
+      }
+    },
+    firebase:{
+    users: usersref
+},
+  created: debounce(function () {
+    this.$nextTick(() => {
+        this.GetKey(); 
+    })
+}, 1500),
   methods: {
+    GetKey(){
+        for(let i = 0;i<this.users.length;i++){
+            if(firebase.auth().currentUser.uid == this.users[i].UserId){
+                this.key = this.users[i]['.key']
+                this.companyname = this.users[i]['Company']
+                console.log(this.key)
+            }
+        }
+    },
     logout: function() {
       authentication.signOut().then(() => {
         this.$router.replace('login')

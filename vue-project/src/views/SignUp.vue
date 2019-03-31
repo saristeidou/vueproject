@@ -31,6 +31,7 @@
         confirmpassword: '',
         name: '',
         surname: '',
+        company: '',
         dismissSecs: 2,
         dismissCountDown: 0,
         showDismissibleAlert: false
@@ -45,8 +46,8 @@
         authentication.createUserWithEmailAndPassword(this.email, this.password).then(
           (user) => {
             usersref.push({UserId: firebase.auth().currentUser.uid, Name: this.name, 
-            Surname: this.surname});
-            this.$router.replace('home')
+            Surname: this.surname, Company: this.company});
+            this.$router.replace('details')
           },
           (err) => {
             alert('Oops. ' + err.message)

@@ -9,6 +9,7 @@ import Products from '@/views/Products';
 import Sales from '@/views/Sales';
 import Branch from '@/views/Branch';
 import Edit from '@/views/Edit';
+import AddDetails from '@/views/AddDetails';
 
 Vue.use(Router);
 
@@ -65,6 +66,14 @@ const router = new Router({
       path: '/edit',
       name: 'Edit',
       component: Edit,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/details',
+      name: 'Details',
+      component: AddDetails,
       meta: {
         requiresAuth: true
       }

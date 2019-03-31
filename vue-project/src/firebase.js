@@ -7,7 +7,7 @@ const app = initializeApp({
     authDomain: "test-581d6.firebaseapp.com",
     databaseURL: "https://test-581d6.firebaseio.com",
     projectId: "test-581d6",
-    storageBucket: "test-581d6.appspot.com",
+    storageBucket: "gs://test-581d6.appspot.com",
     messagingSenderId: "121221885821"
 })
 
@@ -15,6 +15,7 @@ const app = initializeApp({
 
 export const db = app.database();
 export const authentication = app.auth();
+export const storage = app.storage();
 export const dataref = db.ref('Data');
 export const branchref = db.ref('Data/0/Branch');
 export const dailyref = db.ref('Data/1/Weeklysales');
