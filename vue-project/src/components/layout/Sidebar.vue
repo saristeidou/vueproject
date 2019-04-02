@@ -1,11 +1,11 @@
 <template>
 
   <div class= "side-bar">
-<div>
-  <b-navbar toggleable type="dark" variant="dark">
+<!-- <div>
+  <b-navbar toggleable type="light" variant="light">
     <b-navbar-toggle target="nav_text_collapse" />
 
-    <b-navbar-brand>{{companyname}}</b-navbar-brand>
+    <b-navbar-brand><router-link to="/home">Sales-analysis</router-link></b-navbar-brand>
 
     <b-collapse is-nav id="nav_text_collapse">
       <b-navbar-nav>
@@ -17,6 +17,34 @@
         <b-nav-item><i class="fa icons">&#xf2bd;</i><a @click="logout">Logout</a></b-nav-item>
       </b-navbar-nav>
     </b-collapse>
+    <b-dropdown variant="link" size="lg" >
+      <template slot="button-content"><i class="fa icons">&#xf2bd;</i><a @click="logout"></a></template>
+        <b-dropdown-item href="#">Account</b-dropdown-item>
+         <b-dropdown-item><a @click="logout">Logout</a></b-dropdown-item>
+      </b-dropdown>
+  </b-navbar>
+</div> -->
+<div>
+  <b-navbar type="dark" variant="dark">
+    <b-navbar-nav>
+
+      <!-- Navbar dropdowns -->
+      <b-nav-item-dropdown id="dropdown-left" text="Left align" variant="link" size="lg" no-caret>
+        <template slot="button-content"><i class="fa icons">&#xf0c9;</i></template>
+        <b-dropdown-item href="#">EN</b-dropdown-item>
+        <b-dropdown-item href="#">ES</b-dropdown-item>
+        <b-dropdown-item href="#">RU</b-dropdown-item>
+        <b-dropdown-item href="#">FA</b-dropdown-item>
+      </b-nav-item-dropdown>
+
+      <b-nav-item class="center"><router-link to="/home">Home</router-link></b-nav-item>
+
+      <b-nav-item-dropdown id="dropdown-right" right text="Right align" variant="link" size="lg" class="topright" no-caret>
+        <template slot="button-content"><i class="fa icons">&#xf2bd;</i><a @click="logout"></a></template>
+        <b-dropdown-item href="#">Account</b-dropdown-item>
+        <b-dropdown-item><a @click="logout">Logout</a></b-dropdown-item>
+      </b-nav-item-dropdown>
+    </b-navbar-nav>
   </b-navbar>
 </div>
 		<slot/>
@@ -39,21 +67,12 @@ export default {
     firebase:{
     users: usersref
 },
-  created: debounce(function () {
-    this.$nextTick(() => {
-        this.GetKey(); 
-    })
-}, 1500),
+//   created: debounce(function () {
+//     this.$nextTick(() => {
+//         this.GetKey(); 
+//     })
+// }, 1500),
   methods: {
-    GetKey(){
-        for(let i = 0;i<this.users.length;i++){
-            if(firebase.auth().currentUser.uid == this.users[i].UserId){
-                this.key = this.users[i]['.key']
-                this.companyname = this.users[i]['Company']
-                console.log(this.key)
-            }
-        }
-    },
     logout: function() {
       authentication.signOut().then(() => {
         this.$router.replace('login')
@@ -65,15 +84,43 @@ export default {
 
 
 <style scoped>
-a{
+/* a{
 color:rgba(255, 255, 255, 0.5) !important;
-text-align:left;;
-}
+}  */
 .icons{
    float:left;
   margin-right:10px;
-  
+
 }
+.topleft {
+  bottom: 8px;
+  left: 16px;
+
+}
+.topleft a{
+  color:black;
+}
+.topright {
+  position: absolute;
+  top: 4px;
+  right: 16px;
+}
+.topright a{
+  color:black;
+}
+.center {
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  font-size: 18px;
+  text-align: center;
+}
+.center a{
+  color:rgba(255, 255, 255, 0.5);
+}
+/* .dropdown-menu{
+background-color: coral !important;
+} */
 
 
 </style>
