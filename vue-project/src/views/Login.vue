@@ -13,6 +13,8 @@
 <script>
   import { authentication } from '@/firebase.js';
   import LayoutLogin from '@/components/layout/Login_layout.vue'
+  import firebase from 'firebase';
+  import Vue from 'vue';
   export default {
     name: 'login',
     data() {
@@ -29,6 +31,7 @@
         
         authentication.signInWithEmailAndPassword(this.email, this.password).then(
           (user) => {
+            Vue.prototype.$UID = firebase.auth().currentUser.uid
             this.$router.replace('home')
           },
           (err) => {

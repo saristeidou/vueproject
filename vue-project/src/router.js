@@ -10,6 +10,8 @@ import Sales from '@/views/Sales';
 import Branch from '@/views/Branch';
 import Edit from '@/views/Edit';
 import AddDetails from '@/views/AddDetails';
+import Account from '@/views/Account';
+import Password from '@/views/Password';
 
 Vue.use(Router);
 
@@ -74,6 +76,22 @@ const router = new Router({
       path: '/details',
       name: 'Details',
       component: AddDetails,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/account',
+      name: 'Account',
+      component: Account,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/password',
+      name: 'Password',
+      component: Password,
       meta: {
         requiresAuth: true
       }

@@ -7,6 +7,17 @@
   
 </template>
 
+<script>
+import firebase from 'firebase';
+import Vue from 'vue';
+export default {
+  created: function(){
+    Vue.prototype.$UID = firebase.auth().currentUser.uid
+  }
+}
+</script>
+
+
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

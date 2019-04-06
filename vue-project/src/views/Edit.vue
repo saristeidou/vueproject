@@ -2,12 +2,12 @@
   <div class="edit">
     <Sidebar> 
       
-    <b-form-group label="Stelect table">
+    <!-- <b-form-group label="Stelect table">
       <b-form-select :options="tableOption" v-model="selected" />
-    </b-form-group>
+    </b-form-group> -->
 
     <TableProduct msg="Products" v-if="selected === 'Product'"></TableProduct>
-    <TableStock msg="Stock" v-if="selected === 'Stock'"></TableStock>
+    <TableStock></TableStock>
     <TableType msg="Type" v-if="selected === 'Type'"></TableType>
 
     </Sidebar> 
@@ -25,7 +25,7 @@ export default {
     data(){
       return{
       tableOption:['Product','Stock','Type'],
-     selected: 'Product'
+      selected: 'Stock'
       }
     },
     components: {

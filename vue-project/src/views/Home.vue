@@ -5,7 +5,7 @@
       <b-row class="mb-3">
         <b-col md="4" class="my-3">
           <b-card title="Total Sales" style="text-align:center;">
-            <h3>£{{Totalsales}}</h3>
+            <h3>£{{$UID}}</h3>
           </b-card>
         </b-col>
         <b-col md="4" class="my-3">

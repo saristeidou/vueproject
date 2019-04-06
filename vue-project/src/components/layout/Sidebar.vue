@@ -41,7 +41,7 @@
 
       <b-nav-item-dropdown id="dropdown-right" right text="Right align" variant="link" size="lg" class="topright" no-caret>
         <template slot="button-content"><i class="fa icons">&#xf2bd;</i><a @click="logout"></a></template>
-        <b-dropdown-item href="#">Account</b-dropdown-item>
+        <b-dropdown-item><router-link to="/account">Account</router-link></b-dropdown-item>
         <b-dropdown-item><a @click="logout">Logout</a></b-dropdown-item>
       </b-nav-item-dropdown>
     </b-navbar-nav>
@@ -84,9 +84,9 @@ export default {
 
 
 <style scoped>
-/* a{
-color:rgba(255, 255, 255, 0.5) !important;
-}  */
+ a{
+  text-decoration: none;
+}  
 .icons{
    float:left;
   margin-right:10px;

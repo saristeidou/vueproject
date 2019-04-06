@@ -21,6 +21,7 @@
  <script>
   import { authentication, usersref } from '@/firebase.js';
   import firebase from 'firebase';
+  import Vue from 'vue';
 
   export default {
     name: 'signUp',
@@ -45,6 +46,7 @@
         if(this.password == this.confirmpassword){
         authentication.createUserWithEmailAndPassword(this.email, this.password).then(
           (user) => {
+            Vue.prototype.$UID = firebase.auth().currentUser.uid
             usersref.push({UserId: firebase.auth().currentUser.uid, Name: this.name, 
             Surname: this.surname, Company: this.company});
             this.$router.replace('details')

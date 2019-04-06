@@ -1,8 +1,10 @@
 <template>
   <div class="tablestock"> 
-      <h1>{{ msg }}</h1>
+    <b-container fluid>
+      <h2>Stock</h2>
     <b-row>
-      <b-col md="10" class="my-1">
+      <b-col md="1" class="my-1"></b-col>
+      <b-col md="5" class="my-1">
         <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
           <b-input-group>
             <b-form-input v-model="filter" placeholder="Type to Search" />
@@ -12,39 +14,87 @@
           </b-input-group>
         </b-form-group>
       </b-col>
-
-    <b-col md="2" class="my-1">
+      <b-col md="4" class="my-1">
+        <b-form-group label-cols-sm="3" label="Per page" class="mb-0">
+          <b-form-select v-model="perPage" :options="pageOptions"></b-form-select>
+        </b-form-group>
+      </b-col>
+      <b-col md="1" class="my-1">
         <b-button v-b-toggle.collapse1 variant="primary">Add</b-button>
+      </b-col>
+      <b-col md="1" class="my-1">
       </b-col>
     </b-row>
            <b-collapse id="collapse1" class="mt-2">
             <b-card>
-              <b-input-group>
-              <b-form-input placeholder="StockId" v-model="StockId"/>
-              </b-input-group>
-              <b-input-group>
-              <b-form-input placeholder="ProductId" v-model="ProductId"/>
-              </b-input-group>
-              <b-input-group>
-              <b-form-input placeholder="BranchId" v-model="BranchId"/>
-              </b-input-group>
-              <b-input-group>
-              <b-form-input placeholder="SellingPrice" v-model="SellingPrice"/>
-              </b-input-group>
-               <b-button v-b-toggle.collapse1 variant="success" @click="Create">Add</b-button>
+              <b-row class="my-1">
+                <b-col sm="1">
+                </b-col>
+                <b-col sm="3">
+                  <label for="input-default">Stock code:</label>
+                </b-col>
+                <b-col sm="7">
+                  <b-form-input id="input-default" placeholder="Enter your stock code" v-model = "NextId" disabled></b-form-input>
+                </b-col>
+              </b-row>
+              <b-row class="my-1">
+                <b-col sm="1">
+                </b-col>
+                <b-col sm="3">
+                  <label for="input-default">Original price:</label>
+                </b-col>
+                <b-col sm="7">
+                  <b-form-input id="input-default" type="number" placeholder="Enter your original price" v-model = "OriginalPrice"></b-form-input>
+                </b-col>
+              </b-row>
+              <b-row class="my-1">
+                <b-col sm="1">
+                </b-col>
+                <b-col sm="3">
+                  <label for="input-default">Selling price:</label>
+                </b-col>
+                <b-col sm="7">
+                  <b-form-input id="input-default" type="number" placeholder="Enter your selling price" v-model = "SellingPrice"></b-form-input>
+                </b-col>
+              </b-row>
+              <b-row class="my-1">
+                <b-col sm="1">
+                </b-col>
+                <b-col sm="3">
+                  <label for="input-default">Type:</label>
+                </b-col>
+                <b-col sm="7">
+                  <b-form-select v-model="selected">
+                  <option v-for="tp in stype" 
+                  v-bind:key="tp['.key']">{{ tp.Type_Name }}</option>
+                  </b-form-select>
+                </b-col>
+              </b-row>
+              <b-button v-b-toggle.collapse1 variant="success" @click="Create">Add</b-button>
             </b-card>
           </b-collapse>
-
+  <b-row>
+     <b-col md="1" class="my-1">
+      </b-col>
+    <b-col md="10" class="my-1">
     <b-table
       id="myTable"
       stacked="md"
-      :items="stock"
+      :items="newtable"
       :fields="fields"
       :filter="filter"
-      :per-page= 20
+      :per-page="perPage"
       :current-page="currentPage"
       small
     >
+
+    <template slot="OriginalPrice" slot-scope="row">
+        £ {{ row.item.OriginalPrice }}
+      </template>
+
+      <template slot="SellingPrice" slot-scope="row">
+        £ {{ row.item.SellingPrice }}
+      </template>
 
     <template slot="Edit" slot-scope="row">
         <b-button size="sm" @click="row.toggleDetails" class="mr-2">
@@ -62,11 +112,6 @@
           <b-row class="mb-2">
             <b-col sm="3" class="text-sm-right"><b>Product Id:</b></b-col>
             <b-col><input type="text" v-model="row.item.ProductId"></b-col>
-          </b-row>
-
-          <b-row class="mb-2">
-            <b-col sm="3" class="text-sm-right"><b>Stock Id:</b></b-col>
-            <b-col><input type="text" v-model="row.item.StockId"></b-col>
           </b-row>
 
           <b-row class="mb-2">
@@ -91,53 +136,126 @@
       aria-controls="myTable"
       align="center"
     />
-    
+    </b-col>
+  </b-row>
+    </b-container>
   </div>
 </template>
 
 <script>
-import { stockref } from '@/firebase.js';
+import { stockref, typeref, productref } from '@/firebase.js'
+import debounce from 'lodash/debounce'
 
 export default {
-    name: 'tablestock',
     data(){
       return{
      fields: [
           {
-            key: 'StockId',
-            sortable: true
+            key: 'Stock',
+            sortable: true, 
+            sortDirection: 'desc', 
+            label: 'Stock'
           },
           {
-            key: 'ProductId',
-            sortable: true
-          },
-          {
-            key: 'BranchId',
-            sortable: true
+            key: 'OriginalPrice',
+            sortable: true, 
+            sortDirection: 'desc', 
+            label: 'Original Price'
           },
           {
             key: 'SellingPrice',
-            sortable: true
+            sortable: true,
+            sortDirection: 'desc', 
+            label: 'Selling Price'
+          },
+          {
+            key: 'Type',
+            sortable: true, 
+            sortDirection: 'desc', 
+            label: 'Type'
           }, 'Edit'
         ],
-     filter: null,
-     currentPage: 1,
-     isActive: true
+        StockId:'',
+        ProductId:'',
+        BranchId:'',
+        SellingPrice:'',
+        OriginalPrice:'',
+        TypeID:'',
+        filter: null,
+        currentPage: 1,
+        perPage: 10,
+        pageOptions: [10, 15, 20],
+        sortBy: null,
+        sortDesc: false,
+        sortDirection: 'asc',
+        isActive: true,
+        newtable:[],
+        selected:'',
+        NextId:'',
+        NextPId:''
       }
     },
     computed: {
       rows() {
         return this.stock.length
+      },
+      sortOptions() {
+        // Create an options list from our fields
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
       }
     },
   firebase: {
-     stock: stockref
+     stock: stockref,
+     stype: typeref,
+     product: productref
+
    },
-   
+   mounted: debounce(function () {
+    this.$nextTick(() => {
+        this.Createtable(); // runs only once
+    })
+}, 1000),
+
    methods:{
+          Createtable(){
+            const stck = this.stock
+            var length = this.stock.length
+            var num = Number(length) + 1
+            var tbl = []
+            this.NextId = 'STCK' + num
+            console.log(this.stock.length)
+         for(let i = 0;i<this.stock.length;i++){
+             var valObj = this.product.filter(function(elem){
+             if(elem.ProductId == stck[i].ProductId) return elem.Type
+               });
+              var vaObj = this.stype.filter(function(elem){
+             if(elem.TypeId == valObj[0].Type) return elem.Type_Name
+               });
+              tbl.push({Stock: this.stock[i].StockId,
+              OriginalPrice: valObj[0].OriginalPrice,
+              SellingPrice: this.stock[i].SellingPrice,
+              Type: vaObj[0].Type_Name})
+           }
+
+           this.newtable = tbl
+          },
       Create(){
-        stockref.push({StockId: this.StockId, ProductId: this.ProductId, 
-        BranchId: this.BranchId, SellingPrice: this.SellingPrice });
+        var prdlength = this.product.length
+        var pnum = Number(prdlength) + 1
+        const sel = this.selected
+        this.NextPId = 'PRD' + pnum
+        var typeObj = this.stype.filter(function(elem){
+             if(elem.Type_Name == sel) return elem.TypeId
+               });
+        stockref.push({StockId: this.NextId, ProductId: this.NextPId, 
+        SellingPrice: this.SellingPrice });
+        productref.push({ProductId: this.NextPId, 
+        Type: typeObj[0].TypeId, OriginalPrice: this.OriginalPrice });
+        this.Createtable()
       },
       Remove(key){
         stockref.child(key).remove();
