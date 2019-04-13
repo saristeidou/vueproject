@@ -19,7 +19,7 @@
 </template>
 
  <script>
-  import { authentication, usersref } from '@/firebase.js';
+  import { authentication,user, usersref } from '@/firebase.js';
   import firebase from 'firebase';
   import Vue from 'vue';
 
@@ -39,15 +39,22 @@
       }
     },
     firebase:{
-      newuser: usersref
+      newuser: usersref,
+      fireuser: user
+    },
+    created:function(){
+      console.log(user)
     },
     methods: {
       signUp: function() {
         if(this.password == this.confirmpassword){
         authentication.createUserWithEmailAndPassword(this.email, this.password).then(
           (user) => {
-            Vue.prototype.$UID = firebase.auth().currentUser.uid
-            usersref.push({UserId: firebase.auth().currentUser.uid, Name: this.name, 
+            console.log(user)
+            const id = firebase.auth().currentUser.uid
+            Vue.prototype.$UID = id
+            const us = firebase.database().ref('Data/5/users/' + id)
+            us.update({UserId: id, Name: this.name, 
             Surname: this.surname, Company: this.company});
             this.$router.replace('details')
           },

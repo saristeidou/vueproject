@@ -12,6 +12,8 @@ import Edit from '@/views/Edit';
 import AddDetails from '@/views/AddDetails';
 import Account from '@/views/Account';
 import Password from '@/views/Password';
+import Calendar from '@/views/Calendar';
+import Reports from '@/views/Reports';
 
 Vue.use(Router);
 
@@ -92,6 +94,22 @@ const router = new Router({
       path: '/password',
       name: 'Password',
       component: Password,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/calendar',
+      name: 'Calendar',
+      component: Calendar,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/reports',
+      name: 'Reports',
+      component: Reports,
       meta: {
         requiresAuth: true
       }

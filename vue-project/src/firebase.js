@@ -17,6 +17,7 @@ export const db = app.database();
 export const authentication = app.auth();
 export const storage = app.storage();
 export const dataref = db.ref('Data');
+export const user = 'Data/5/users/';
 export const branchref = db.ref('Data/0/Branch');
 export const dailyref = db.ref('Data/1/Weeklysales');
 export const productref = db.ref('Data/2/Product');

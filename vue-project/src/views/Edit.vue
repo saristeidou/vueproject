@@ -1,14 +1,8 @@
 <template>
   <div class="edit">
     <Sidebar> 
-      
-    <!-- <b-form-group label="Stelect table">
-      <b-form-select :options="tableOption" v-model="selected" />
-    </b-form-group> -->
 
-    <TableProduct msg="Products" v-if="selected === 'Product'"></TableProduct>
     <TableStock></TableStock>
-    <TableType msg="Type" v-if="selected === 'Type'"></TableType>
 
     </Sidebar> 
   </div>
@@ -16,28 +10,19 @@
 
 <script>
 import Sidebar from '@/components/layout/Sidebar.vue';
-import TableProduct from '@/components/TableProduct.vue';
 import TableStock from '@/components/TableStock.vue';
-import TableType from '@/components/TableType.vue';
+
 
 export default {
     name: 'edit',
     data(){
       return{
-      tableOption:['Product','Stock','Type'],
-      selected: 'Stock'
+
       }
     },
     components: {
     Sidebar,
-    TableProduct,
-    TableStock,
-    TableType
-    },
-    computed: {
-      rows() {
-        return this.stock.length
-      }
+    TableStock
     }
 }
 

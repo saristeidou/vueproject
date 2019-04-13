@@ -139,7 +139,7 @@ methods: {
         }else{
             console.log("fail")
         }
-        
+        this.$router.replace('home')
     }
 }
 }

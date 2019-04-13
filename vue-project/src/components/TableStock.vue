@@ -63,13 +63,32 @@
                 <b-col sm="3">
                   <label for="input-default">Type:</label>
                 </b-col>
-                <b-col sm="7">
+                <b-col sm="5">
                   <b-form-select v-model="selected">
                   <option v-for="tp in stype" 
                   v-bind:key="tp['.key']">{{ tp.Type_Name }}</option>
                   </b-form-select>
                 </b-col>
+                <b-col sm="2">
+                  <a v-b-toggle.collapse2>Add new type</a>
+                </b-col>
               </b-row>
+              <b-collapse id="collapse2" class="mt-2">
+                <b-card>
+                  <b-row class="my-1">
+                <b-col sm="1">
+                </b-col>
+                <b-col sm="3">
+                  <label for="input-default">Type:</label>
+                </b-col>
+                <b-col sm="4">
+                  <b-form-input id="input-default" type="text" placeholder="Enter new type" v-model = "Typetxt"></b-form-input>
+                </b-col>
+                <b-col sm="3">
+                <b-button v-b-toggle.collapse2 variant="success" @click="NewType">Create Type</b-button>                </b-col>
+              </b-row>
+                </b-card>
+              </b-collapse>
               <b-button v-b-toggle.collapse1 variant="success" @click="Create">Add</b-button>
             </b-card>
           </b-collapse>
@@ -106,25 +125,21 @@
         <b-card>
           <b-row class="mb-2">
             <b-col sm="3" class="text-sm-right"><b>Stock Id:</b></b-col>
-            <b-col><input type="text" v-model="row.item.StockId"></b-col>
+            <b-col>
+              <input type="text" v-model="row.item.Stock" disabled></b-col>
           </b-row>
 
           <b-row class="mb-2">
-            <b-col sm="3" class="text-sm-right"><b>Product Id:</b></b-col>
-            <b-col><input type="text" v-model="row.item.ProductId"></b-col>
+            <b-col sm="3" class="text-sm-right"><b>Original Price:</b></b-col>
+            <b-col><input type="text" v-model="row.item.OriginalPrice"></b-col>
           </b-row>
 
           <b-row class="mb-2">
-            <b-col sm="3" class="text-sm-right"><b>Branch Id:</b></b-col>
-            <b-col><input type="text" v-model="row.item.BranchId"></b-col>
-          </b-row>
-
-          <b-row class="mb-2">
-            <b-col sm="3" class="text-sm-right"><b>Selling Price:</b></b-col>
+            <b-col sm="3" class="text-sm-right"><b>Selling price:</b></b-col>
             <b-col><input type="text" v-model="row.item.SellingPrice"></b-col>
           </b-row>
 
-          <b-button variant="danger" size="sm" @click="Remove(row.item['.key'])">Delete</b-button>
+          <b-button variant="danger" size="sm" @click="Remove(row.item['key'])">Delete</b-button>
           <b-button variant="primary" size="sm" @click="Edit(row.item)">Edit</b-button>
         </b-card>
       </template>
@@ -192,7 +207,8 @@ export default {
         newtable:[],
         selected:'',
         NextId:'',
-        NextPId:''
+        NextPId:'',
+        Typetxt:''
       }
     },
     computed: {
@@ -227,7 +243,6 @@ export default {
             var num = Number(length) + 1
             var tbl = []
             this.NextId = 'STCK' + num
-            console.log(this.stock.length)
          for(let i = 0;i<this.stock.length;i++){
              var valObj = this.product.filter(function(elem){
              if(elem.ProductId == stck[i].ProductId) return elem.Type
@@ -235,7 +250,8 @@ export default {
               var vaObj = this.stype.filter(function(elem){
              if(elem.TypeId == valObj[0].Type) return elem.Type_Name
                });
-              tbl.push({Stock: this.stock[i].StockId,
+              tbl.push({key: this.stock[i]['.key'],
+              Stock: this.stock[i].StockId,
               OriginalPrice: valObj[0].OriginalPrice,
               SellingPrice: this.stock[i].SellingPrice,
               Type: vaObj[0].Type_Name})
@@ -259,17 +275,24 @@ export default {
       },
       Remove(key){
         stockref.child(key).remove();
+        this.Createtable()
       },
       Edit(stock){
-        const key = stock['.key'];
-        stockref.child(key).set({ StockId: stock.StockId,
-        ProductId: stock.ProductId, BranchId: stock.BranchId,
-       SellingPrice: stock.SellingPrice })
+        const key = stock['key'];
+        stockref.child(key).update({ SellingPrice: stock.SellingPrice })
+        productref.child(key).update({ OriginalPrice: stock.OriginalPrice })
+        this.Createtable()
+      },
+      NewType(){
+        var tplength = this.stype.length
+        var num = Number(tplength) + 1
+        this.NextTp = 'TP' + num
+        if(this.Typetxt != ''){
+          typeref.push({TypeId: this.NextTp, Type_Name: this.Typetxt})
+        }
+        
       }
-   },
-  props: {
-    msg: String
-  }
+   }
 }
 
 </script>
