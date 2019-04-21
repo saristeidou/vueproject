@@ -104,7 +104,7 @@
       :filter="filter"
       :per-page="perPage"
       :current-page="currentPage"
-      small
+      
     >
 
     <template slot="OriginalPrice" slot-scope="row">
@@ -158,6 +158,7 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 import { stockref, typeref, productref } from '@/firebase.js'
 import debounce from 'lodash/debounce'
 
@@ -213,7 +214,7 @@ export default {
     },
     computed: {
       rows() {
-        return this.stock.length
+        return this.newtable.length
       },
       sortOptions() {
         // Create an options list from our fields
@@ -224,31 +225,41 @@ export default {
           })
       }
     },
-  firebase: {
-     stock: stockref,
-     stype: typeref,
-     product: productref
-
+    firebase() {
+    return {
+    product: {
+      source: firebase.database().ref('Data/1/Product').child(firebase.auth().currentUser.uid),
+      asObject: true
+    },
+    stype: {
+      source: firebase.database().ref('Data/2/Type').child(firebase.auth().currentUser.uid),
+      asObject: true
+    },
+    stock: {
+      source: firebase.database().ref('Data/3/Stock').child(firebase.auth().currentUser.uid),
+      asObject: true
+    }
+  }
    },
    mounted: debounce(function () {
     this.$nextTick(() => {
         this.Createtable(); // runs only once
     })
-}, 1000),
+}, 2000),
 
    methods:{
           Createtable(){
-            const stck = this.stock
-            var length = this.stock.length
+            let stck = this.stock['.value']
+            var length = stck
             var num = Number(length) + 1
             var tbl = []
             this.NextId = 'STCK' + num
          for(let i = 0;i<this.stock.length;i++){
              var valObj = this.product.filter(function(elem){
-             if(elem.ProductId == stck[i].ProductId) return elem.Type
+             if(elem.ProductId == stck[i].ProductId) return elem
                });
               var vaObj = this.stype.filter(function(elem){
-             if(elem.TypeId == valObj[0].Type) return elem.Type_Name
+             if(elem.TypeId == valObj[0].Type) return elem
                });
               tbl.push({key: this.stock[i]['.key'],
               Stock: this.stock[i].StockId,

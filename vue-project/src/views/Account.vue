@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 import { usersref, storage } from '@/firebase.js';
 import Sidebar from '@/components/layout/Sidebar.vue';
 import debounce from 'lodash/debounce'
@@ -84,9 +85,14 @@ data() {
         key: ''
       }
     },
-firebase:{
-    users: usersref
-},
+  firebase() {
+    return {
+    users: {
+      source: firebase.database().ref('Data/4/users').child(firebase.auth().currentUser.uid),
+      asObject: true
+    }
+  }
+   },
 components:{
     Sidebar
 },
@@ -97,14 +103,15 @@ mounted: debounce(function () {
 }, 1000),
 methods: {
     GetKey(){
+        let user = this.users['.value']
         for(let i = 0;i<this.users.length;i++){
             if(this.$UID == this.users[i].UserId){
                 console.log('wow')
-                this.key = this.users[i]['.key']
-                this.name =  this.users[i]['Name'],
-                this.surname = this.users[i]['Surname'],
-                this.companyname = this.users[i]['Company'],
-                this.imageUrl = this.users[i]['imageUrl']
+                this.key = user[i]['.key']
+                this.name =  user[i]['Name'],
+                this.surname = user[i]['Surname'],
+                this.companyname = user[i]['Company'],
+                this.imageUrl = user[i]['imageUrl']
             }
         }
     },
@@ -140,9 +147,10 @@ methods: {
                         Company: this.companyname,
                         imageUrl: imageUrl
                         })
-                        this.$router.replace('home')
+                        
                         }
-                    )       
+                    )    
+                     
             }else{
                 usersref.child(this.key).update({
                         Name: this.name,
@@ -154,7 +162,7 @@ methods: {
         }else{
             console.log("fail")
         }
-        
+        this.$router.replace('home')
     }
 }
 }

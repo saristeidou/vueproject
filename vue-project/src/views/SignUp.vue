@@ -19,7 +19,7 @@
 </template>
 
  <script>
-  import { authentication,user, usersref } from '@/firebase.js';
+  import { authentication } from '@/firebase.js';
   import firebase from 'firebase';
   import Vue from 'vue';
 
@@ -38,10 +38,6 @@
         showDismissibleAlert: false
       }
     },
-    firebase:{
-      newuser: usersref,
-      fireuser: user
-    },
     created:function(){
       console.log(user)
     },
@@ -53,7 +49,7 @@
             console.log(user)
             const id = firebase.auth().currentUser.uid
             Vue.prototype.$UID = id
-            const us = firebase.database().ref('Data/5/users/' + id)
+            const us = firebase.database().ref('Data/4/users/' + id)
             us.update({UserId: id, Name: this.name, 
             Surname: this.surname, Company: this.company});
             this.$router.replace('details')

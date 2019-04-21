@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 import Sidebar from '@/components/layout/Sidebar.vue';
 import { Calendar, Weekday, Month } from 'dayspan';
 import { usersref } from '@/firebase.js'
@@ -74,10 +75,15 @@ export default {
 }, 1000),
   components:{
       Sidebar
-  },
-  firebase:{
-    user: usersref
-  },
+  },firebase() {
+    return {
+    user: {
+      source: firebase.database().ref('Data/4/users').child(firebase.auth().currentUser.uid),
+      asObject: true
+    }
+  }
+   },
+  
   methods:
   {
     getCalendarTime(calendarEvent)
@@ -108,11 +114,12 @@ export default {
     },
     loadState()
     {
+      let user = this.user['.value']
       let state = {};
       try
       {
         //let savedState = JSON.parse(localStorage.getItem(this.storeKey));
-        let savedState = this.user[this.position].Calendar
+        let savedState = user[this.position].Calendar
         if (savedState)
         {
           state = savedState;

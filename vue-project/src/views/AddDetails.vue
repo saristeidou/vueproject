@@ -73,9 +73,14 @@ data() {
         key: ''
       }
     },
-firebase:{
-    users: usersref
-},
+    firebase() {
+    return {
+    users: {
+      source: firebase.database().ref('Data/4/users').child(firebase.auth().currentUser.uid),
+      asObject: true
+    }
+  }
+   },
 components:{
     Sidebar
 },
@@ -86,9 +91,10 @@ created: debounce(function () {
 }, 1000),
 methods: {
     GetKey(){
-        for(let i = 0;i<this.users.length;i++){
-            if(firebase.auth().currentUser.uid == this.users[i].UserId){
-                this.key = this.users[i]['.key']
+         let user = this.users['.value']
+        for(let i = 0;i<user.length;i++){
+            if(firebase.auth().currentUser.uid == user[i].UserId){
+                this.key = user[i]['.key']
             }
         }
     },
@@ -118,13 +124,15 @@ methods: {
                         return uploadTaskSnapshot.ref.getDownloadURL()
                     })
                     .then(imageUrl => {
+                        //note for later
+                        //usersref.child($UID).child(this.key)
                         return usersref.child(this.key).update({
                         Name: this.name,
                         Surname: this.surname,
                         Company: this.companyname,
                         imageUrl: imageUrl
                         })
-                        this.$router.replace('home')
+                        
                         }
                     )
                 
@@ -134,7 +142,7 @@ methods: {
                         Surname: this.surname,
                         Company: this.companyname
                         })
-                this.$router.replace('home')
+                
             }
         }else{
             console.log("fail")

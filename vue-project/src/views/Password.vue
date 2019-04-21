@@ -37,10 +37,9 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 import { usersref } from '@/firebase.js'
 import Sidebar from '@/components/layout/Sidebar.vue'
-import debounce from 'lodash/debounce'
-  import firebase from 'firebase'
 
 export default {
 name: 'password',
@@ -67,6 +66,7 @@ data() {
     },
 firebase:{
     users: usersref
+    
 },
 components:{
     Sidebar

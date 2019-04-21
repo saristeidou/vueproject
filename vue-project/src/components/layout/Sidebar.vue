@@ -31,10 +31,9 @@
       <!-- Navbar dropdowns -->
       <b-nav-item-dropdown id="dropdown-left" text="Left align" variant="link" size="lg" no-caret>
         <template slot="button-content"><i class="fa icons">&#xf0c9;</i></template>
-        <b-dropdown-item href="#">EN</b-dropdown-item>
-        <b-dropdown-item href="#">ES</b-dropdown-item>
-        <b-dropdown-item href="#">RU</b-dropdown-item>
-        <b-dropdown-item href="#">FA</b-dropdown-item>
+        <b-dropdown-item><router-link to="/edit">Stock</router-link></b-dropdown-item>
+        <b-dropdown-item><router-link to="/calendar">Calendar</router-link></b-dropdown-item>
+        <b-dropdown-item><router-link to="/reports">Reports</router-link></b-dropdown-item>
       </b-nav-item-dropdown>
 
       <b-nav-item class="center"><router-link to="/home">Home</router-link></b-nav-item>
@@ -54,8 +53,8 @@
 
 <script>
 import { authentication, usersref } from '@/firebase.js'
-import firebase from 'firebase'
-import debounce from 'lodash/debounce'
+//import firebase from 'firebase'
+
 
 export default {
   data() {
