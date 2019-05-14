@@ -1,25 +1,55 @@
 <template>
   <div class="sign-up">
-    <p>Let's create a new account !</p>
-    <input type="text" v-model="email" placeholder="Email"><br>
-    <input type="password" v-model="password" placeholder="Password"><br>
-    <b-alert
-      :show="dismissCountDown"
-      dismissible
-      variant="danger"
-      @dismissed="dismissCountDown=0"
-      @dismiss-count-down="countDownChanged"
-    >  
-    Password does not much!
-    </b-alert>
-    <input type="password" v-model="confirmpassword" placeholder="Password"><br>
-    <button @click="signUp">Sign Up</button>
-    <span>or go back to <router-link to="/login">login</router-link>.</span>
+    <LayoutLogin>
+      <b-card>
+        <!-- Sign up page where users can create an account -->
+      <h3>Sign Up</h3>
+        <b-row class="my-1">
+          <b-col sm="3">
+          </b-col>
+            <b-col sm="6">
+              <b-form-input id="input-default" placeholder="Enter your Email" v-model = "email" ></b-form-input>
+            </b-col>
+        </b-row>
+        <b-row class="my-1">
+          <b-col sm="3">
+          </b-col>
+          <b-col sm="6">
+            <b-form-input id="input-default" type="password" placeholder="Enter your Password" v-model = "password"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row class="my-1">
+          <b-col sm="3">
+          </b-col>
+          <b-col sm="6">
+            <b-form-input id="input-default" type="password" placeholder="Renter your Password" v-model = "confirmpassword"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row class="my-1">
+          <b-col sm="3">
+          </b-col>
+          <b-col sm="6">
+            <b-alert
+              :show="dismissCountDown"
+              dismissible
+              variant="danger"
+              @dismissed="dismissCountDown=0"
+              @dismiss-count-down="countDownChanged"
+            >  
+            Password does not much!
+            </b-alert>
+          </b-col>
+        </b-row>
+        <b-button variant="primary" @click="signUp">Sign Up</b-button>
+      <p>or go back to <router-link to="/login">login</router-link>.</p>
+    </b-card>
+  </LayoutLogin>
   </div>
 </template>
 
  <script>
   import { authentication } from '@/firebase.js';
+  import LayoutLogin from '@/components/layout/Login_layout.vue'
   import firebase from 'firebase';
   import Vue from 'vue';
 
@@ -43,6 +73,8 @@
     },
     methods: {
       signUp: function() {
+        //creates a new account and send the user to the details page 
+        //to the Add details page
         if(this.password == this.confirmpassword){
         authentication.createUserWithEmailAndPassword(this.email, this.password).then(
           (user) => {
@@ -78,17 +110,14 @@
   }
   input {
     margin: 10px 0;
-    width: 20%;
     padding: 15px;
   }
   button {
     margin-top: 10px;
-    width: 10%;
     cursor: pointer;
   }
-  span {
+  p {
     display: block;
     margin-top: 20px;
-    font-size: 11px;
   }
 </style>

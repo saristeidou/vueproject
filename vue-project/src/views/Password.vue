@@ -46,13 +46,7 @@ name: 'password',
  computed: {
         State() {
          return this.npassword == this.cpassword ? null : false
-       },
-//       surnameState() {
-//         return this.surname.length > 2 ? true : null
-//       },
-//       companynameState() {
-//         return this.companyname.length > 2 ? true : null
-//       }
+       }
    },
 data() {
       return {
@@ -95,12 +89,11 @@ this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'passw
                 })
                 console.log('cont')
                 if (passed==='true'){
-                    console.log('fuck')
                 this.$router.replace('account')
             }
     },
     Create(){
-
+        //creates the new password
         if(this.password != '' && this.npassword != '' && this.cpassword != ''){
             console.log("pass")
             const user = firebase.auth().currentUser

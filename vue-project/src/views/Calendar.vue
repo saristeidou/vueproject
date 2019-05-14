@@ -64,12 +64,13 @@ export default {
   }),
   mounted: debounce(function () {
     this.$nextTick(() => {
-        for(let i=0;i<this.user.length;i++){
-        if(this.user[i].UserId == this.$UID){
-        this.key = this.user[i]['.key']
-        this.position = i
-        }
-      }
+      //   for(let i=0;i<this.user.length;i++){
+      //   if(this.user[i].UserId == this.$UID){
+      //   this.key = this.user[i]['.key']
+      //   this.position = i
+      //   console.log(i)
+      //   }
+      // }
         this.loadState();
     })
 }, 1000),
@@ -78,8 +79,7 @@ export default {
   },firebase() {
     return {
     user: {
-      source: firebase.database().ref('Data/4/users').child(firebase.auth().currentUser.uid),
-      asObject: true
+      source: firebase.database().ref('Data/4/users').child(firebase.auth().currentUser.uid)
     }
   }
    },
@@ -109,17 +109,21 @@ export default {
       cal.push({id: this.$UID, st: state})
       console.log(cal)
       let json = JSON.stringify(cal.st);
-      usersref.child(this.key).update({Calendar: state})
+      const id = firebase.auth().currentUser.uid
+      const us = firebase.database().ref('Data/4/users/' + id)
+      us.update({Calendar: state})
       localStorage.setItem(this.storeKey, json);
     },
     loadState()
     {
-      let user = this.user['.value']
+      console.log("yee")
+      let user = this.user
       let state = {};
       try
       {
         //let savedState = JSON.parse(localStorage.getItem(this.storeKey));
-        let savedState = user[this.position].Calendar
+        let savedState = user.Calendar
+        console.log(savedState)
         if (savedState)
         {
           state = savedState;

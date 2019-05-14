@@ -5,9 +5,6 @@ import Router from 'vue-router';
 import Home from '@/views/Home';
 import Login from '@/views/Login';
 import SignUp from '@/views/SignUp';
-import Products from '@/views/Products';
-import Sales from '@/views/Sales';
-import Branch from '@/views/Branch';
 import Edit from '@/views/Edit';
 import AddDetails from '@/views/AddDetails';
 import Account from '@/views/Account';
@@ -16,7 +13,7 @@ import Calendar from '@/views/Calendar';
 import Reports from '@/views/Reports';
 
 Vue.use(Router);
-
+// Link the pages 
 const router = new Router({
   routes: [
     {
@@ -41,27 +38,6 @@ const router = new Router({
       path: '/home',
       name: 'Home',
       component: Home,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/products',
-      name: 'Products',
-      component: Products,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/sales',
-      name: 'Sales',
-      component: Sales
-    },
-    {
-      path: '/branch',
-      name: 'Branch',
-      component: Branch,
       meta: {
         requiresAuth: true
       }
@@ -116,11 +92,11 @@ const router = new Router({
     }
   ]
 });
-
+// makes the login the first page when you enter the website
 router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-
+//if the authentication is true it 
   if (requiresAuth && !currentUser) next('login');
   else if (!requiresAuth && currentUser) next('home');
   else next();

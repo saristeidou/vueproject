@@ -1,7 +1,7 @@
 <template>
   <div class="edit">
     <Sidebar> 
-
+      <!-- calls the TableStock component -->
     <TableStock></TableStock>
 
     </Sidebar> 

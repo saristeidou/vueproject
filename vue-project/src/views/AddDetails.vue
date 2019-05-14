@@ -1,7 +1,9 @@
 <template>
   <div class="addDetails">
         <Sidebar>
-        <b-container fluid>
+<!-- allows the user to add name, surname company name 
+    logo and also allows the user to change password -->
+<b-container fluid>
     <b-card class="my-3">
         <b-row class="my-1">
             <b-col sm="4">
@@ -45,7 +47,7 @@
 </template>
 
 <script>
-import { usersref, storage } from '@/firebase.js';
+import { storage } from '@/firebase.js';
 import Sidebar from '@/components/layout/Sidebar.vue';
 import firebase from 'firebase';
 import debounce from 'lodash/debounce'
@@ -53,6 +55,7 @@ import debounce from 'lodash/debounce'
 export default {
 name: 'addDetails',
 computed: {
+    //validate
       nameState() {
         return this.name.length > 2 ? true : null
       },
@@ -74,10 +77,11 @@ data() {
       }
     },
     firebase() {
+        //retrives data from database
     return {
     users: {
       source: firebase.database().ref('Data/4/users').child(firebase.auth().currentUser.uid),
-      asObject: true
+      asObject:true
     }
   }
    },
@@ -85,23 +89,23 @@ components:{
     Sidebar
 },
 created: debounce(function () {
+    //waits a second and calls GetKey function
     this.$nextTick(() => {
         this.GetKey(); // runs only once
     })
 }, 1000),
 methods: {
     GetKey(){
-         let user = this.users['.value']
-        for(let i = 0;i<user.length;i++){
-            if(firebase.auth().currentUser.uid == user[i].UserId){
-                this.key = user[i]['.key']
-            }
-        }
+        //gets users key
+         let user = this.users
+            this.key = user['.key']
     },
     onPickFile(){
+        //creates a new button
         this.$refs.fileInput.click()
     },
     onFilePicked (event){
+        //picks the image form the users file
         const files = event.target.files
         let filename = files[0].name
         if (filename.lastIndexOf('.')<=0){
@@ -115,6 +119,9 @@ methods: {
         this.image = files[0]
     },
     Create(){
+        //creates a new image and adds it to the database
+        const id = firebase.auth().currentUser.uid
+        const us = firebase.database().ref('Data/4/users/' + id)
         if(this.name != '' && this.surname != '' && this.companyname != ''){
             console.log("pass")
             if(this.image != null){
@@ -126,7 +133,7 @@ methods: {
                     .then(imageUrl => {
                         //note for later
                         //usersref.child($UID).child(this.key)
-                        return usersref.child(this.key).update({
+                        return us.child(this.key).update({
                         Name: this.name,
                         Surname: this.surname,
                         Company: this.companyname,
@@ -137,7 +144,7 @@ methods: {
                     )
                 
             }else{
-                usersref.child(this.key).update({
+                us.child(this.key).update({
                         Name: this.name,
                         Surname: this.surname,
                         Company: this.companyname

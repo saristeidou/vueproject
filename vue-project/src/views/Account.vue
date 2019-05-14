@@ -1,6 +1,8 @@
 <template>
   <div class="account">
         <Sidebar>
+        <!-- includes the account data of the user name, surname company name 
+        logo and also allows the user to change password -->
         <b-container fluid>
     <b-card class="my-3">
         <b-row class="my-1">
@@ -64,17 +66,7 @@ import debounce from 'lodash/debounce'
 
 export default {
 name: 'account',
-// computed: {
-//       nameState() {
-//         return this.name.length > 2 ? true : null
-//       },
-//       surnameState() {
-//         return this.surname.length > 2 ? true : null
-//       },
-//       companynameState() {
-//         return this.companyname.length > 2 ? true : null
-//       }
-//     },
+
 data() {
       return {
         name: '',
@@ -86,10 +78,11 @@ data() {
       }
     },
   firebase() {
+      //reterives data from database
     return {
     users: {
       source: firebase.database().ref('Data/4/users').child(firebase.auth().currentUser.uid),
-      asObject: true
+      asObject:true
     }
   }
    },
@@ -103,22 +96,20 @@ mounted: debounce(function () {
 }, 1000),
 methods: {
     GetKey(){
-        let user = this.users['.value']
-        for(let i = 0;i<this.users.length;i++){
-            if(this.$UID == this.users[i].UserId){
-                console.log('wow')
-                this.key = user[i]['.key']
-                this.name =  user[i]['Name'],
-                this.surname = user[i]['Surname'],
-                this.companyname = user[i]['Company'],
-                this.imageUrl = user[i]['imageUrl']
-            }
-        }
+        //fills the textboxes and adds the logo
+        let user = this.users
+
+        this.key = user['.key']
+        this.name =  user.Name,
+        this.surname = user.Surname,
+        this.companyname = user.Company,
+        this.imageUrl = user.imageUrl
     },
     onPickFile(){
         this.$refs.fileInput.click()
     },
     onFilePicked (event){
+        //picks the image form the users file
         const files = event.target.files
         let filename = files[0].name
         if (filename.lastIndexOf('.')<=0){
@@ -132,6 +123,9 @@ methods: {
         this.image = files[0]
     },
     Create(){
+        //creates a new image and adds it to the database
+        const id = firebase.auth().currentUser.uid
+        const us = firebase.database().ref('Data/4/users/' + id)
         if(this.name != '' && this.surname != '' && this.companyname != ''){
             console.log("pass")
             if(this.image != null){
@@ -141,7 +135,7 @@ methods: {
                         return uploadTaskSnapshot.ref.getDownloadURL()
                     })
                     .then(imageUrl => {
-                        return usersref.child(this.key).update({
+                        return us.child(this.key).update({
                         Name: this.name,
                         Surname: this.surname,
                         Company: this.companyname,
@@ -152,7 +146,7 @@ methods: {
                     )    
                      
             }else{
-                usersref.child(this.key).update({
+                us.child(this.key).update({
                         Name: this.name,
                         Surname: this.surname,
                         Company: this.companyname

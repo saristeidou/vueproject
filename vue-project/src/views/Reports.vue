@@ -1,5 +1,6 @@
 <template>
   <div class="reports">
+    <!-- creates weekly reports -->
     <Sidebar> 
       <b-container fluid>
       <h2>Reports</h2>
@@ -24,12 +25,14 @@
       </b-col>
     </b-row>
     <b-row>
+      <!-- choose between weeks -->
       <b-col md="5" class="my-1">
         <b-form-select v-model="selected" @change="changetable">
             <option v-for="tp in SelectTable" 
             v-bind:key="tp['key']">{{ tp.label }}</option>
         </b-form-select>
       </b-col>
+      <!-- download button -->
       <b-col md="2" class="my-1">
         <button class="btn btn-primary pl-5 pr-5" @click="download">Download PDF</button>
       </b-col>
@@ -46,8 +49,13 @@
     ></b-table>
     </b-col>
     </b-row>
-    {{currentTable}}
-    {{selected}}
+    <b-row>
+      <b-col md="8" class="my-1">
+      </b-col>
+      <b-col md="4" class="my-1">
+        Total: £{{Total}}
+      </b-col>
+    </b-row>
     <b-pagination
       v-model="currentPage"
       :total-rows="rows"
@@ -55,7 +63,6 @@
       align="center"
     />
       </b-container> 
-      {{total}}
     </Sidebar> 
   </div>
 </template>
@@ -86,26 +93,29 @@ export default {
     Sidebar
     },
     computed: {
+      //change the tables
        rows() {
          return this.tables[this.currentTable].data.length
        },
        display() {
          return this.tables[this.currentTable].data
+       },
+       Total() {
+         return this.tables[this.currentTable].total
        }
      },
      firebase() {
+      //retrives data
     return {
     week: {
-      source: firebase.database().ref('Data/0/Weeklysales').child(firebase.auth().currentUser.uid),
-      asObject: true
+      source: firebase.database().ref('Data/0/Weeklysales').child(firebase.auth().currentUser.uid)
     },
     stock: {
-      source: firebase.database().ref('Data/3/Stock').child(firebase.auth().currentUser.uid),
-      asObject: true
+      source: firebase.database().ref('Data/3/Stock').child(firebase.auth().currentUser.uid)
     },
     user: {
       source: firebase.database().ref('Data/4/users').child(firebase.auth().currentUser.uid),
-      asObject: true
+      asObject:true
     }
   }
    },
@@ -126,7 +136,8 @@ export default {
         
      },
      Createtable(){
-       const table = this.week['.value']
+       //creates a table with the necessary data
+       const table = this.week
        var tot = 0
        var date = ''
        var sell = 0
@@ -169,20 +180,19 @@ export default {
         this.currentTable = temptable.length-1
         this.selected = temptable[this.currentTable].date
     },
-    download(){ 
-      const id = this.$UID;
-       var Obj = this.user.filter(function(el){
-        if(id == el.UserId) return el
-        })
+    download(){
+      // creates and downloads pdf 
+      const us = this. user
+      console.log(us)
       //var imgData = btoa(Obj[0].imageUrl)
       const data = this.tables[this.currentTable].data
       const total = this.tables[this.currentTable].total
       let number = 10
-      let pdfName = Obj[0].Company +' '+this.selected
+      let pdfName = us.Company +' '+this.selected
       var doc = new jsPDF()
       doc.setFontSize(22)
       doc.setFontType('bold')
-      doc.text(Obj[0].Company, 10, number)
+      doc.text(us.Company, 10, number)
       //doc.addImage(imgData, 'JPEG', 160, 10, 45, 40);
       number = number + 10
       doc.text(this.selected, 10, number)
@@ -194,12 +204,10 @@ export default {
       doc.setFontType('normal')
       number = number + 10
       for (let i = 0;i<data.length;i++){
+        doc.setFontType('normal')
         doc.text(10, number, data[i].id)
-
         doc.text(60, number, data[i].sellings.toString())
-
         doc.text(110, number, '£ '+data[i].price)
-        
         doc.text(160, number, '£ '+data[i].total)
         number = number + 10
         if (number >= 270){

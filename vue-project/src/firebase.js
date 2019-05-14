@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase';
 
-
-
+//database initialisation
 const app = initializeApp({
     apiKey: "AIzaSyBD5MtiAR3tmQoUXYE7FLWRIwtqaN_Bw7Y",
     authDomain: "test-581d6.firebaseapp.com",
@@ -15,7 +14,6 @@ export const db = app.database();
 export const authentication = app.auth();
 export const storage = app.storage();
 export const dataref = db.ref('Data');
-//export const user = authentication.currentUser.uid;
 export const dailyref = db.ref('Data/0/Weeklysales');
 export const productref = db.ref('Data/1/Product');
 export const typeref = db.ref('Data/2/Type');

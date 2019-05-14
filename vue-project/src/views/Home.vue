@@ -3,23 +3,27 @@
     <Sidebar>
       <b-container>
       <b-row class="mb-3">
+        <!-- Total sales until now -->
         <b-col md="4" class="my-3">
           <b-card title="Total Sales" style="text-align:center;">
             <h3>£{{Totalsales}}</h3>
           </b-card>
         </b-col>
         <b-col md="4" class="my-3">
+          <!-- Total profit until now -->
           <b-card title="Total Profit" style="text-align:center;">
             <h3>£{{Totalprofit}}</h3>
           </b-card>
         </b-col>
         <b-col md="4" class="my-3">
+          <!-- Total items sold until now -->
           <b-card title="Sold Items" style="text-align:center;">
             <h3>{{Itemssold}}</h3>
           </b-card>
         </b-col>
       </b-row>
       </b-container>
+       <!-- The next 2 container contain the charts used -->
       <b-container class="mb-3" fluid>
         <h3>Weekly Sales</h3>
         <GChart
@@ -51,7 +55,7 @@
       <b-container fluid>
         <h3>Discount recommendations</h3>
         <b-row class="mb-3">
-          <b-col cols="6">
+          <!-- <b-col cols="6" class="my-3">
           <b-card title="Due to sale loss" style="text-align:center;">
             <h4>{{Itema}}</h4>
             <h5>From £{{Originalpa}} to £{{Recommenda}}</h5>
@@ -59,14 +63,19 @@
             <b-button variant="success">Yes</b-button>
             <b-button variant="danger">No</b-button>
           </b-card>
-          </b-col>
-          <b-col cols="6">
+          </b-col> -->
+          <b-col cols="1" class="my-3"/>
+          <b-col cols="10" class="my-3">
+            <!-- Gives sales recommendations base on the sales -->
           <b-card title="Due to low sales" style="text-align:center;">
             <h4>{{Itemb}}</h4>
-            <h5>From £{{Originalpb}} to £{{Recommendb}}</h5>
+            <b-form-group label-cols-sm="7" label="Sale percentage" class="mb-0">
+              <b-form-input  v-model="Sale" placeholder="Enter discount %" type="number" min="5" max="100" :state="discountState"></b-form-input>
+            </b-form-group>
+            <h5>From £{{Originalpb}} to £{{Newpriceb}}</h5>
             <h4>Accept recommendation?</h4>
-            <b-button variant="success">Yes</b-button>
-            <b-button variant="danger">No</b-button>
+            <b-button variant="success" @click="AddDiscount()">Yes</b-button>
+            <b-button variant="danger" @click="RemoveDiscount()">No</b-button>
           </b-card>
           </b-col>
         </b-row>
@@ -127,35 +136,43 @@ export default {
       Originalpb: 0,
       Itema: 'PRD81',
       Itemb: 'PRD167',
-      SalesArraya: [],
-      SalesArrayb: [],
-      w:''
+      w:'',
+      Sale: 5,
+      keyb:'',
+      currentDate:''
     }
   },
   components: {
-    //HelloWorld,
     Sidebar
   },
+  computed: {
+    //change the price of item when discount is applied
+    Newpriceb(){
+      return (this.Originalpb - (this.Originalpb*(this.Sale/100))).toFixed(2)
+    },
+    //validates the sale typed
+    discountState() {
+        return this.Sale > 5 && this.Sale < 100 ? true : false
+      }
+  },
+  //import data from database
   firebase() {
     return {
     week: {
-      source: firebase.database().ref('Data/0/Weeklysales').child(firebase.auth().currentUser.uid),
-      asObject: true
+      source: firebase.database().ref('Data/0/Weeklysales').child(firebase.auth().currentUser.uid)
     },
     product: {
-      source: firebase.database().ref('Data/1/Product').child(firebase.auth().currentUser.uid),
-      asObject: true
+      source: firebase.database().ref('Data/1/Product').child(firebase.auth().currentUser.uid)
     },
     stype: {
-      source: firebase.database().ref('Data/2/Type').child(firebase.auth().currentUser.uid),
-      asObject: true
+      source: firebase.database().ref('Data/2/Type').child(firebase.auth().currentUser.uid)
     },
     stock: {
-      source: firebase.database().ref('Data/3/Stock').child(firebase.auth().currentUser.uid),
-      asObject: true
+      source: firebase.database().ref('Data/3/Stock').child(firebase.auth().currentUser.uid)
     }
   }
    },
+   //waits for 2 seconds then calls the Createtable function
    mounted:debounce(function () {
     this.$nextTick(() => {
       
@@ -164,19 +181,21 @@ export default {
         })
 }, 2000),
   methods: {
+    //creates a table including all the data needed for the homepage
     Createtable(){
-            let week = this.week['.value']
-            let stck = this.stock['.value']
-            let prd = this.product['.value']
-            let tp = this.stype['.value']
-            let length = this.week['.value'].length
+            let week = this.week
+            let stck = this.stock
+            let prd = this.product
+            let tp = this.stype
+            let length = this.week.length
+            this.currentDate = week[length-1].WsalesId
             var Sales = 0
             var Profit = 0
-            var Loss = 0
+            var Loss = 0 
             var Items = 0
             var tbl = []
          for(let i = 0;i<length;i++){
-           //console.log(week[i])
+              //filters through the database to find the needed object
              var valObj = stck.filter(function(elem){
              if(elem.StockId == week[i].StockId) return elem
                });
@@ -186,9 +205,10 @@ export default {
                var typeObj = tp.filter(function(elem){
              if(elem.TypeId == Obj[0].Type) return elem
                });
-               Sales = Sales + valObj[0].SellingPrice
-               Loss = Loss + Obj[0].OriginalPrice
+               Sales = Sales + parseFloat(valObj[0].SellingPrice)
+               Loss=Loss + parseFloat(Obj[0].OriginalPrice)              
                Items = Items + week[i].Sellings
+               //new table
               tbl.push({key: valObj[0]['.key'],
               Stock: valObj[0].StockId,
               OriginalPrice: Obj[0].OriginalPrice,
@@ -201,16 +221,19 @@ export default {
               ProductId: Obj[0].ProductId})
            }
            Profit = Sales - Loss
+           //filling the watchers
            this.Itemssold= Items
            this.Totalsales= Sales.toFixed(2)
            this.Totalprofit= Profit.toFixed(2)
            this.newtable = tbl
+           //calling the functions for charts and recommendations
            this.weeklysales()
            this.typechart()
            this.popularchart()
-           this.drawPieChart()
+           this.FindSales()
           },
     weeklysales(){
+      //calculates and creates the bar chart
       var arr = new Array()
       var data = this.newtable
       var totalsales = 0
@@ -244,9 +267,10 @@ export default {
       
     },
     typechart(){
+      //calculates and creates the pie chart
       var arr = new Array()
       var data = this.newtable
-      let tp = this.stype['.value']
+      let tp = this.stype
       var temparr = []
       var sales = 0
 
@@ -262,7 +286,7 @@ export default {
         var objIndex = temparr.findIndex((obj => obj.id == data[i].TypeId))
         temparr[objIndex].sales = temparr[objIndex].sales + data[i].SoldItems
       }
-      console.log(temparr[1].sales)
+
       for(let i = 0;i<temparr.length;i++){
         arr[i+1]=[tp[i].Type_Name, temparr[i].sales]
       }
@@ -271,9 +295,10 @@ export default {
       
     },
     popularchart(){
+      //calculates and creates the column chart
       var arr = new Array()
       var data = this.newtable
-      let prd = this.product['.value']
+      let prd = this.product
       var temparr = []
       var temparr2 = []
       var sales = 0
@@ -306,50 +331,67 @@ export default {
         
     },
     logout: function() {
+      //logout 
       authentication.signOut().then(() => {
         this.$router.replace('login')
       })
     },
-    drawPieChart() {
-      let stck = this.stock['.value']
+    FindSales() {
+      //creates the recommendations
+      let stck = this.stock
       var data = this.newtable
       var temparr = []
       var temparr2 = []
-      var totalmin = 0
-      // var totalmax = 0
       var sales = 0
-      var price = 0
-      var total = this.Itemssold
+      var price = 0      
       
-
+      //ceates a temporary array with the data needed
       for(let i = 0;i<stck.length;i++){
         temparr.push({id: stck[i].StockId,
         price: price,
-        sales: sales})
+        sales: sales,
+        key: stck[i]['.key'],
+        OnSale: stck[i].OnSale})
       }
       for(let i = 0;i<data.length;i++){
          var objIndex = temparr.findIndex((obj => obj.id == data[i].Stock))
          temparr[objIndex].sales = temparr[objIndex].sales + data[i].SoldItems
          temparr[objIndex].price = data[i].SellingPrice
        }
-       var average = total/temparr.length
       
-      for(let i = 0;i<temparr.length;i++){
-        if(temparr[i].sales<average){
+       for(let i = 0;i<temparr.length;i++){
+        if (temparr[i].OnSale === null ||temparr[i].OnSale === undefined) {
          temparr2.push({id: temparr[i].id,
          price: temparr[i].price,
-        sales: temparr[i].sales})
-        totalmin = totalmin + temparr[i].sales
-        }
-      }
-      average = totalmin/temparr.length
-      temparr.sort(function(a, b){return a.sales - b.sales})
+         key: temparr[i].key,
+         sales: temparr[i].sales})
+         }
+       }
 
-      this.SalesArrayb = temparr2
+      temparr2.sort(function(a, b){return a.sales - b.sales})
       this.Itemb = temparr2[1].id
+      this.keyb = temparr2[1].key
       this.Originalpb = temparr2[1].price
-      this.Recommendb = (temparr2[1].price - (temparr2[1].price*0.15)).toFixed(2)
-
+    },
+    AddDiscount(){
+      //validates add changes the price from the recommentation
+      const key = this.keyb
+      const price = this.Newpriceb
+      const id = firebase.auth().currentUser.uid
+      const stck = firebase.database().ref('Data/3/Stock/' + id)
+      if(this.Sale > 5 && this.Sale < 100){
+      stck.child(key).update({ SellingPrice: price, OnSale: true })
+      this.FindSales()
+      }
+    },
+    RemoveDiscount(){
+      //remove the item from the recommentation array
+      const key = this.keyb
+      const price = this.Newpriceb
+      const id = firebase.auth().currentUser.uid
+      const stck = firebase.database().ref('Data/3/Stock/' + id)
+      stck.child(key).update({ SellingPrice: price, OnSale: false })
+      this.FindSales()
     }
   }
 }
