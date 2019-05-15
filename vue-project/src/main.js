@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueGoogleCharts from 'vue-google-charts'
 import Vuetify from 'vuetify'
 import DaySpanVuetify from 'dayspan-vuetify'
-
+//
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'dayspan-vuetify/dist/lib/dayspan-vuetify.min.css'
